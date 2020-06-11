@@ -39,7 +39,7 @@ from utils import *
 #         out = self.linear_out(out2)
 #         return out
 
-def plotConfusionMatrix(y, predictions):
+def plotConfusionMatrix(predictions, y):
 	cm = confusion_matrix(y, predictions.detach().numpy())
 	print(cm)
 	plt.imshow(cm, interpolation = 'nearest', cmap = plt.cm.Wistia)
@@ -133,10 +133,10 @@ def main():
 
 # 	model = MLP(input_dimension=129*108)
 	val_acc, train_acc, train_loss, v_loss, v_acc = train_model(train_batches, dev_batches, model, lr = 0.1, momentum = 0)
-	loss, accuracy, y, predictions = run_epoch(test_batches, model.eval(), None)
+	loss, accuracy, predictions, y = run_epoch(test_batches, model.eval(), None)
 	print("Loss on test set:" + str(loss) + " Accuracy on test set:" + str(accuracy))
 # 	plotAccuracy(val_acc, train_acc, train_loss, v_loss, v_acc)
-	plotConfusionMatrix(y, predictions)
+	plotConfusionMatrix(predictions, y)
 
 
 if __name__ == '__main__':
