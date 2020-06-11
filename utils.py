@@ -193,13 +193,13 @@ def train_model(train_data, dev_data, model, lr=0.01, momentum=0.9, nesterov=Fal
 		print("-----------------\nEpoch {}:\n".format(epoch))
 
 		# Run training
-		loss, acc = run_epoch(train_data, model.train(), optimizer)
+		loss, acc, predictions, y = run_epoch(train_data, model.train(), optimizer)
 		print("Train loss: {:.6f} | Train accuracy: {:.6f} ".format(loss, acc))
 		train_loss.append(loss)
 		train_acc.append(acc)
 
 		# Run validation
-		val_loss, val_acc = run_epoch(dev_data, model.eval(), optimizer)
+		val_loss, val_acc, predictions, y = run_epoch(dev_data, model.eval(), optimizer)
 		print("Validation loss: {:.6f} | Validation accuracy: {:.6f}".format(val_loss, val_acc))
 		v_loss.append(val_loss)
 		v_acc.append(val_acc)
@@ -243,4 +243,4 @@ def run_epoch(data, model, optimizer):
     ### Calculate epoch level scores
     avg_loss = np.mean(losses)
     avg_accuracy = np.mean(batch_accuracies)	
-    return avg_loss, avg_accuracy	
+    return avg_loss, avg_accuracy, predictions, y	
