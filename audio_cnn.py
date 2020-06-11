@@ -18,7 +18,7 @@ from utils import *
 
 # X_train_shape = (2424, 129, 108)
 # X_test_shape = (607, 129, 108)
-# input_dimension= 129*129
+# input_dimension= 129*108
 
 # class MLP(nn.Module):
 # 	""" Nothing just Mltilayer Perceptron Model"""
@@ -38,24 +38,35 @@ from utils import *
 #         out = self.linear_out(out2)
 #         return out
 
-# def Plot(val_acc, train_acc, train_loss, v_loss, v_acc):
-# 	epoch = np.arange(1,26)
-#     fig, axs = plt.subplots(2)
-#     axs[0].plot(epoch,train_acc)
-#     axs[0].plot(epoch,v_acc)
-#     axs[0].set_title('Train vs. Validation Accuracy')
-#     axs[0].set(xlabel='Number of Epoches', ylabel='Accuracy')
-    
-#     axs[1].plot(epoch,train_loss)
-#     axs[1].plot(epoch,v_loss)
-#     axs[1].set_title('Train vs. Validation Loss')
-#     axs[1].set(xlabel='Number of Epoches', ylabel='Loss')
+def plotConfusionMatrix(y, predictions):
+	cm = confusion_matrix(y, predictions.detach().numpy())
+	print(cm)
+	plt.imshow(cm, interpolation = 'nearest', cmap = plt.cm.Wistia)
+	class_names = ["THE","A","TO","OF","IN","ARE","AND","IS","THAT","THEY"]
+	plt.title('confusion_matrix')
+	plt.ylabel('True label')
+	plt.xlabel('Predicted value')
+	points = np.arange(len(class_names))
+	plt.xticks(points, class_names, rotation = 45)
+	plt.yticks(points, class_names)
+	for i in range(10):
+		for j in range(10):
+			plt.text(j,i, cm[i][j])
+	plt.show()		
 
-#     fig.tight_layout(pad=0.5)
-#     plt.legend([axs[0], axs[1]], ["Train_Accuracy Validation_Accuracy", "Train_Loss Validation_Loss"])
-#     plt.show()
-
-
+def plotAccuracy(val_acc, train_acc, train_loss, v_loss, v_acc):
+	epoch_num = np.arange(1,30)
+	plt.plot(epoch_num, train_acc, label='train')
+	plt.plot(epoch_num, v_acc, label='test_validation')
+	plt.xlabel("epochs")
+	plt.ylabel("accuracy")
+	plt.title('model accuracy')
+	plt.legend()
+	plt.tight_layout()
+	# plt.grid(True)
+	plt.show()
+	# plt.savefig('Train and Validation Accuracy.jpeg')	
+	
 def main():
 	### ========= LOAD DATASET =======  
 	num_classes = 10
@@ -119,22 +130,12 @@ def main():
 	
 	# # # =======================================
 
-	# model = MLP(input_dimension=129*129)
+# 	model = MLP(input_dimension=129*108)
 	val_acc, train_acc, train_loss, v_loss, v_acc = train_model(train_batches, dev_batches, model, lr = 0.1, momentum = 0)
-	loss, accuracy = run_epoch(test_batches, model.eval(), None)
+	loss, accuracy, y, predictions = run_epoch(test_batches, model.eval(), None)
 	print("Loss on test set:" + str(loss) + " Accuracy on test set:" + str(accuracy))
-	# Plot(val_acc, train_acc, train_loss, v_loss, v_acc)
-	# epoch_num = np.arange(1,26)
-	# plt.plot(epoch_num, train_acc, label='Train_Accuracy')
-	# plt.plot(epoch_num, v_acc, label='Validation Accuracy')
-	# plt.xlabel("Number of Epoches")
-	# plt.ylabel("Accuracy")
-	# plt.title('Train Accuracy and Validation Accuracy')
-	# plt.legend()
-	# plt.tight_layout()
-	# plt.grid(True)
-	# plt.show()
-	# plt.savefig('Train and Validation Accuracy.jpeg')
+# 	plotAccuracy(val_acc, train_acc, train_loss, v_loss, v_acc)
+	plotConfusionMatrix(y, predictions)
 
 
 if __name__ == '__main__':
