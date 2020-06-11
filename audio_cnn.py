@@ -11,6 +11,7 @@ import torch
 import torch.autograd as autograd
 import torch.nn.functional as F
 import torch.nn as nn
+from sklearn.metrics import confusion_matrix
 import sys
 sys.path.append("..")
 import utils
